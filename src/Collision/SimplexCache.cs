@@ -1,4 +1,8 @@
 using Box2DSharp.Common;
+using System;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -7,7 +11,7 @@ namespace Box2DSharp.Collision
     public struct SimplexCache
     {
         /// length or area
-        public float Metric;
+        public Single Metric;
 
         public ushort Count;
 

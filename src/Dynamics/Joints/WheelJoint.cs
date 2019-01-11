@@ -1,6 +1,11 @@
 using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -21,52 +26,52 @@ namespace Box2DSharp.Dynamics.Joints
 
         private Vector2 _ax, _ay;
 
-        private float _bias;
+        private Single _bias;
 
-        private float _dampingRatio;
+        private Single _dampingRatio;
 
         private bool _enableMotor;
 
-        private float _frequencyHz;
+        private Single _frequencyHz;
 
-        private float _gamma;
+        private Single _gamma;
 
-        private float _impulse;
+        private Single _impulse;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private Vector2 _localCenterA;
 
         private Vector2 _localCenterB;
 
-        private float _mass;
+        private Single _mass;
 
-        private float _maxMotorTorque;
+        private Single _maxMotorTorque;
 
-        private float _motorImpulse;
+        private Single _motorImpulse;
 
-        private float _motorMass;
+        private Single _motorMass;
 
-        private float _motorSpeed;
+        private Single _motorSpeed;
 
-        private float _sAx, _sBx;
+        private Single _sAx, _sBx;
 
-        private float _sAy, _sBy;
+        private Single _sAy, _sBy;
 
-        private float _springImpulse;
+        private Single _springImpulse;
 
-        private float _springMass;
+        private Single _springMass;
 
         internal WheelJoint(WheelJointDef def) : base(def)
         {
@@ -115,7 +120,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current joint translation, usually in meters.
-        private float GetJointTranslation()
+        private Single GetJointTranslation()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -130,7 +135,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current joint linear speed, usually in meters per second.
-        private float GetJointLinearSpeed()
+        private Single GetJointLinearSpeed()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -153,7 +158,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current joint angle in radians.
-        private float GetJointAngle()
+        private Single GetJointAngle()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -161,7 +166,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current joint angular speed in radians per second.
-        private float GetJointAngularSpeed()
+        private Single GetJointAngularSpeed()
         {
             var wA = BodyA.AngularVelocity;
             var wB = BodyB.AngularVelocity;
@@ -186,7 +191,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Set the motor speed, usually in radians per second.
-        private void SetMotorSpeed(float speed)
+        private void SetMotorSpeed(Single speed)
         {
             if (!speed.Equals(_motorSpeed))
             {
@@ -197,13 +202,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the motor speed, usually in radians per second.
-        private float GetMotorSpeed()
+        private Single GetMotorSpeed()
         {
             return _motorSpeed;
         }
 
         /// Set/Get the maximum motor force, usually in N-m.
-        private void SetMaxMotorTorque(float torque)
+        private void SetMaxMotorTorque(Single torque)
         {
             if (torque != _maxMotorTorque)
             {
@@ -213,35 +218,35 @@ namespace Box2DSharp.Dynamics.Joints
             }
         }
 
-        private float GetMaxMotorTorque()
+        private Single GetMaxMotorTorque()
         {
             return _maxMotorTorque;
         }
 
         /// Get the current motor torque given the inverse time step, usually in N-m.
-        private float GetMotorTorque(float inv_dt)
+        private Single GetMotorTorque(Single inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
 
         /// Set/Get the spring frequency in hertz. Setting the frequency to zero disables the spring.
-        private void SetSpringFrequencyHz(float hz)
+        private void SetSpringFrequencyHz(Single hz)
         {
             _frequencyHz = hz;
         }
 
-        private float GetSpringFrequencyHz()
+        private Single GetSpringFrequencyHz()
         {
             return _frequencyHz;
         }
 
         /// Set/Get the spring damping ratio
-        private void SetSpringDampingRatio(float ratio)
+        private void SetSpringDampingRatio(Single ratio)
         {
             _dampingRatio = ratio;
         }
 
-        private float GetSpringDampingRatio()
+        private Single GetSpringDampingRatio()
         {
             return _dampingRatio;
         }
@@ -259,13 +264,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             return inv_dt * (_impulse * _ay + _springImpulse * _ax);
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
@@ -303,8 +308,8 @@ namespace Box2DSharp.Dynamics.Joints
             _invIa = BodyA.InverseInertia;
             _invIb = BodyB.InverseInertia;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var cA = data.Positions[_indexA].Center;
             var aA = data.Positions[_indexA].Angle;
@@ -435,8 +440,8 @@ namespace Box2DSharp.Dynamics.Joints
         /// <inheritdoc />
         internal override void SolveVelocityConstraints(in SolverData data)
         {
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var vA = data.Velocities[_indexA].V;
             var wA = data.Velocities[_indexA].W;
@@ -521,7 +526,7 @@ namespace Box2DSharp.Dynamics.Joints
 
             var k = _invMassA + _invMassB + _invIa * _sAy * _sAy + _invIb * _sBy * _sBy;
 
-            float impulse;
+            Single impulse;
             if (!k.Equals(0.0f))
             {
                 impulse = -C / k;

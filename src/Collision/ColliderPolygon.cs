@@ -1,7 +1,11 @@
+using System;
 using System.Diagnostics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -11,7 +15,7 @@ namespace Box2DSharp.Collision
     public static partial class CollisionUtils
     {
         // Find the max separation between poly1 and poly2 using edge normals from poly1.
-        public static float FindMaxSeparation(
+        public static Single FindMaxSeparation(
             out int edgeIndex,
             PolygonShape poly1,
             in Transform xf1,
@@ -150,7 +154,7 @@ namespace Box2DSharp.Collision
             Transform xf1, xf2;
             int edge1; // reference edge
             byte flip;
-            const float k_tol = 0.1f * Settings.LinearSlop;
+            Single k_tol = 0.1f * Settings.LinearSlop;
 
             if (separationB > separationA + k_tol)
             {

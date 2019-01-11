@@ -3,6 +3,11 @@ using System.Numerics;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using Box2DSharp.Dynamics;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Tests
 {
@@ -162,12 +167,12 @@ namespace Box2DSharp.Tests
 
                 var body = World.CreateBody(bd);
 
-                var angle = 0.0f;
-                const float delta = Settings.Pi / 3.0f;
+                Single angle = 0.0f;
+                Single delta = Settings.Pi / 3.0f;
                 var vertices = new Vector2[6];
                 for (var i = 0; i < 6; ++i)
                 {
-                    vertices[i].Set(0.5f * (float) Math.Cos(angle), 0.5f * (float) Math.Sin(angle));
+                    vertices[i].Set(0.5f * (Single) Math.Cos(angle), 0.5f * (Single) Math.Sin(angle));
                     angle += delta;
                 }
 

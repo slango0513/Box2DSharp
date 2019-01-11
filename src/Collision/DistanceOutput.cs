@@ -1,4 +1,9 @@
+using System;
 using System.Numerics;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -11,7 +16,7 @@ namespace Box2DSharp.Collision
         /// closest point on shapeB
         public Vector2 PointB;
 
-        public float Distance;
+        public Single Distance;
 
         /// number of GJK iterations used
         public int Iterations;

@@ -1,4 +1,7 @@
 using System.Numerics;
+#if USE_FIXED_POINT
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Collider
 {

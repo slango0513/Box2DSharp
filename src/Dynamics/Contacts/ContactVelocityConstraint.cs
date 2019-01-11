@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Contacts
 {
@@ -13,15 +18,15 @@ namespace Box2DSharp.Dynamics.Contacts
 
         public int ContactIndex;
 
-        public float Friction;
+        public Single Friction;
 
         public int IndexA;
 
         public int IndexB;
 
-        public float InvIa, InvIb;
+        public Single InvIa, InvIb;
 
-        public float InvMassA, InvMassB;
+        public Single InvMassA, InvMassB;
 
         public Matrix2x2 K;
 
@@ -31,8 +36,8 @@ namespace Box2DSharp.Dynamics.Contacts
 
         public int PointCount;
 
-        public float Restitution;
+        public Single Restitution;
 
-        public float TangentSpeed;
+        public Single TangentSpeed;
     }
 }

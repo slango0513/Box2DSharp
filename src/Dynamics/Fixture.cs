@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision;
@@ -5,6 +6,10 @@ using Box2DSharp.Collision.Collider;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using Microsoft.Extensions.ObjectPool;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics
 {
@@ -17,7 +22,7 @@ namespace Box2DSharp.Dynamics
     {
         private static readonly ObjectPool<Fixture> _pool = new DefaultObjectPool<Fixture>(new FixturePoolPolicy());
 
-        private float _density;
+        private Single _density;
 
         private Filter _filter;
 
@@ -26,7 +31,7 @@ namespace Box2DSharp.Dynamics
         /// <summary>
         /// the coefficient of restitution. This will _not_ change the restitution of existing contacts.
         /// </summary>
-        public float Restitution;
+        public Single Restitution;
 
         /// Get the parent body of this fixture. This is null if the fixture is not attached.
         /// @return the parent body.
@@ -35,7 +40,7 @@ namespace Box2DSharp.Dynamics
         /// <summary>
         /// the density of this fixture. This will _not_ automatically adjust the mass of the body. You must call b2Body::ResetMassData to update the body's mass.
         /// </summary>
-        public float Density
+        public Single Density
         {
             get => _density;
             set
@@ -64,7 +69,7 @@ namespace Box2DSharp.Dynamics
         /// <summary>
         /// the coefficient of friction. This will _not_ change the friction of existing contacts.
         /// </summary>
-        public float Friction { get; set; }
+        public Single Friction { get; set; }
 
         public bool IsSensor
         {
@@ -390,20 +395,20 @@ namespace Box2DSharp.Dynamics
     public class FixtureDef
     {
         /// The density, usually in kg/m^2.
-        public float Density;
+        public Single Density;
 
         /// Contact filtering data.
         public Filter Filter;
 
         /// The friction coefficient, usually in the range [0,1].
-        public float Friction;
+        public Single Friction;
 
         /// A sensor shape collects contact information but never generates a collision
         /// response.
         public bool IsSensor;
 
         /// The restitution (elasticity) usually in the range [0,1].
-        public float Restitution;
+        public Single Restitution;
 
         /// The shape, this must be set. The shape will be cloned, so you
         /// can create the shape on the stack.

@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -27,19 +32,19 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 LocalAxisA;
 
         /// The lower translation limit, usually in meters.
-        public float LowerTranslation;
+        public Single LowerTranslation;
 
         /// The maximum motor torque, usually in N-m.
-        public float MaxMotorForce;
+        public Single MaxMotorForce;
 
         /// The desired motor speed in radians per second.
-        public float MotorSpeed;
+        public Single MotorSpeed;
 
         /// The constrained angle between the bodies: bodyB_angle - bodyA_angle.
-        public float ReferenceAngle;
+        public Single ReferenceAngle;
 
         /// The upper translation limit, usually in meters.
-        public float UpperTranslation;
+        public Single UpperTranslation;
 
         private PrismaticJointDef()
         {

@@ -1,3 +1,9 @@
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+#endif
+
+using System;
+
 namespace Box2DSharp.Dynamics.Joints
 {
     /// Gear joint definition. This definition requires two existing
@@ -12,7 +18,7 @@ namespace Box2DSharp.Dynamics.Joints
 
         /// The gear ratio.
         /// @see b2GearJoint for explanation.
-        public float Ratio;
+        public Single Ratio;
 
         private GearJointDef()
         {

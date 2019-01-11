@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -9,11 +14,11 @@ namespace Box2DSharp.Dynamics.Joints
     public class WeldJointDef : JointDef
     {
         /// The damping ratio. 0 = no damping, 1 = critical damping.
-        public float DampingRatio;
+        public Single DampingRatio;
 
         /// The mass-spring-damper frequency in Hertz. Rotation only.
         /// Disable softness with a value of 0.
-        public float FrequencyHz;
+        public Single FrequencyHz;
 
         /// The local anchor point relative to bodyA's origin.
         public Vector2 LocalAnchorA;
@@ -22,7 +27,7 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 LocalAnchorB;
 
         /// The bodyB angle minus bodyA angle in the reference state (radians).
-        public float ReferenceAngle;
+        public Single ReferenceAngle;
 
         public WeldJointDef()
         {

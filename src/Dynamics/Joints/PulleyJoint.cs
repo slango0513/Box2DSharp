@@ -2,6 +2,11 @@ using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -15,43 +20,43 @@ namespace Box2DSharp.Dynamics.Joints
     /// zero length.
     public class PulleyJoint : Joint
     {
-        private readonly float _constant;
+        private readonly Single _constant;
 
-        private readonly float _lengthA;
+        private readonly Single _lengthA;
 
-        private readonly float _lengthB;
+        private readonly Single _lengthB;
 
         // Solver shared
         private readonly Vector2 _localAnchorA;
 
         private readonly Vector2 _localAnchorB;
 
-        private readonly float _ratio;
+        private readonly Single _ratio;
 
         private Vector2 _groundAnchorA;
 
         private Vector2 _groundAnchorB;
 
-        private float _impulse;
+        private Single _impulse;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private Vector2 _localCenterA;
 
         private Vector2 _localCenterB;
 
-        private float _mass;
+        private Single _mass;
 
         private Vector2 _rA;
 
@@ -92,25 +97,25 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current length of the segment attached to bodyA.
-        public float GetLengthA()
+        public Single GetLengthA()
         {
             return _lengthA;
         }
 
         /// Get the current length of the segment attached to bodyB.
-        public float GetLengthB()
+        public Single GetLengthB()
         {
             return _lengthB;
         }
 
         /// Get the pulley ratio.
-        public float GetRatio()
+        public Single GetRatio()
         {
             return _ratio;
         }
 
         /// Get the current length of the segment attached to bodyA.
-        public float GetCurrentLengthA()
+        public Single GetCurrentLengthA()
         {
             var p = BodyA.GetWorldPoint(_localAnchorA);
             var s = _groundAnchorA;
@@ -119,7 +124,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current length of the segment attached to bodyB.
-        public float GetCurrentLengthB()
+        public Single GetCurrentLengthB()
         {
             var p = BodyB.GetWorldPoint(_localAnchorB);
             var s = _groundAnchorB;
@@ -140,14 +145,14 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             var P = _impulse * _uB;
             return inv_dt * P;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return 0.0f;
         }

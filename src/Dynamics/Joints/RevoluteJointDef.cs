@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -29,20 +34,20 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 LocalAnchorB;
 
         /// The lower angle for the joint limit (radians).
-        public float LowerAngle;
+        public Single LowerAngle;
 
         /// The maximum motor torque used to achieve the desired motor speed.
         /// Usually in N-m.
-        public float MaxMotorTorque;
+        public Single MaxMotorTorque;
 
         /// The desired motor speed. Usually in radians per second.
-        public float MotorSpeed;
+        public Single MotorSpeed;
 
         /// The bodyB angle minus bodyA angle in the reference state (radians).
-        public float ReferenceAngle;
+        public Single ReferenceAngle;
 
         /// The upper angle for the joint limit (radians).
-        public float UpperAngle;
+        public Single UpperAngle;
 
         public RevoluteJointDef()
         {

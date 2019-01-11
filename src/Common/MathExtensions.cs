@@ -1,5 +1,11 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+using Vector3 = FixedMath.Numerics.Fix64Vector3;
+#endif
 
 namespace Box2DSharp.Common
 {
@@ -8,13 +14,13 @@ namespace Box2DSharp.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValid(in this Vector2 vector2)
         {
-            return !float.IsInfinity(vector2.X) && !float.IsInfinity(vector2.Y);
+            return !Single.IsInfinity(vector2.X) && !Single.IsInfinity(vector2.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValid(this float x)
+        public static bool IsValid(this Single x)
         {
-            return !float.IsInfinity(x);
+            return !Single.IsInfinity(x);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -25,7 +31,7 @@ namespace Box2DSharp.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Set(ref this Vector2 vector2, float x, float y)
+        public static void Set(ref this Vector2 vector2, Single x, Single y)
         {
             vector2.X = x;
             vector2.Y = y;
@@ -40,7 +46,7 @@ namespace Box2DSharp.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Set(ref this Vector3 vector3, float x, float y, float z)
+        public static void Set(ref this Vector3 vector3, Single x, Single y, Single z)
         {
             vector3.X = x;
             vector3.Y = y;
@@ -49,7 +55,7 @@ namespace Box2DSharp.Common
 
         /// Convert this vector into a unit vector. Returns the length.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Normalize(ref this Vector2 vector2)
+        public static Single Normalize(ref this Vector2 vector2)
         {
             var length = vector2.Length();
             if (length < Settings.Epsilon)

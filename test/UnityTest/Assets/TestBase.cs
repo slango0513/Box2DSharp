@@ -11,7 +11,13 @@ using Box2DSharp.Inspection;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 using Logger = Box2DSharp.Common.Logger;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#else
 using Vector2 = System.Numerics.Vector2;
+#endif
 using Color = System.Drawing.Color;
 using Debug = System.Diagnostics.Debug;
 using Joint = Box2DSharp.Dynamics.Joints.Joint;
@@ -614,11 +620,11 @@ namespace Box2DSharp
 
             public PointState State;
 
-            public float NormalImpulse;
+            public Single NormalImpulse;
 
-            public float TangentImpulse;
+            public Single TangentImpulse;
 
-            public float Separation;
+            public Single Separation;
         };
     }
 }

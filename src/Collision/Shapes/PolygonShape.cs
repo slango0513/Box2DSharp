@@ -3,6 +3,11 @@ using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Shapes
 {
@@ -190,7 +195,7 @@ namespace Box2DSharp.Collision.Shapes
         /// Build vertices to represent an axis-aligned box centered on the local origin.
         /// @param hx the half-width.
         /// @param hy the half-height.
-        public void SetAsBox(float hx, float hy)
+        public void SetAsBox(Single hx, Single hy)
         {
             Count = 4;
             Vertices[0].Set(-hx, -hy);
@@ -209,7 +214,7 @@ namespace Box2DSharp.Collision.Shapes
         /// @param hy the half-height.
         /// @param center the center of the box in local coordinates.
         /// @param angle the rotation of the box in local coordinates.
-        public void SetAsBox(float hx, float hy, in Vector2 center, float angle)
+        public void SetAsBox(Single hx, Single hy, in Vector2 center, Single angle)
         {
             SetAsBox(hx, hy);
             var transform = new Transform(in center, angle);
@@ -253,7 +258,7 @@ namespace Box2DSharp.Collision.Shapes
             var p2 = MathUtils.MulT(transform.Rotation, input.P2 - transform.Position);
             var d = p2 - p1;
 
-            float lower = 0.0f, upper = input.MaxFraction;
+            Single lower = 0.0f, upper = input.MaxFraction;
 
             var index = -1;
 
@@ -335,7 +340,7 @@ namespace Box2DSharp.Collision.Shapes
         }
 
         /// @see b2Shape::ComputeMass
-        public override void ComputeMass(out MassData massData, float density)
+        public override void ComputeMass(out MassData massData, Single density)
         {
             // Polygon mass, centroid, and inertia.
             // Let rho be the polygon density in mass per unit area.
@@ -364,8 +369,8 @@ namespace Box2DSharp.Collision.Shapes
             Debug.Assert(Count >= 3);
 
             var center = new Vector2(0.0f, 0.0f);
-            var area = 0.0f;
-            var I = 0.0f;
+            Single area = 0.0f;
+            Single I = 0.0f;
 
             // s is the reference point for forming triangles.
             // It's location doesn't change the result (except for rounding error).
@@ -379,7 +384,7 @@ namespace Box2DSharp.Collision.Shapes
 
             s *= 1.0f / Count;
 
-            const float k_inv3 = 1.0f / 3.0f;
+            Single k_inv3 = 1.0f / 3.0f;
 
             for (var i = 0; i < Count; ++i)
             {
@@ -395,8 +400,8 @@ namespace Box2DSharp.Collision.Shapes
                 // Area weighted centroid
                 center += triangleArea * k_inv3 * (e1 + e2);
 
-                float ex1 = e1.X, ey1 = e1.Y;
-                float ex2 = e2.X, ey2 = e2.Y;
+                Single ex1 = e1.X, ey1 = e1.Y;
+                Single ex2 = e2.X, ey2 = e2.Y;
 
                 var intx2 = ex1 * ex1 + ex2 * ex1 + ex2 * ex2;
                 var inty2 = ey1 * ey1 + ey2 * ey1 + ey2 * ey2;
@@ -456,14 +461,14 @@ namespace Box2DSharp.Collision.Shapes
             Debug.Assert(count >= 3);
 
             var c = new Vector2(0.0f, 0.0f);
-            var area = 0.0f;
+            Single area = 0.0f;
 
             // pRef is the reference point for forming triangles.
             // It's location doesn't change the result (except for rounding error).
 
             var pRef = new Vector2(0.0f, 0.0f);
 
-            const float inv3 = 1.0f / 3.0f;
+            Single inv3 = 1.0f / 3.0f;
 
             for (var i = 0; i < count; ++i)
             {

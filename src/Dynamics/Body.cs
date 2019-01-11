@@ -7,6 +7,10 @@ using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using Box2DSharp.Dynamics.Contacts;
 using Box2DSharp.Dynamics.Joints;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics
 {
@@ -38,16 +42,16 @@ namespace Box2DSharp.Dynamics
         public bool AllowSleep;
 
         /// The world angle of the body in radians.
-        public float Angle;
+        public Single Angle;
 
         /// Angular damping is use to reduce the angular velocity. The damping parameter
         /// can be larger than 1.0f but the damping effect becomes sensitive to the
         /// time step when the damping parameter is large.
         /// Units are 1/time
-        public float AngularDamping;
+        public Single AngularDamping;
 
         /// The angular velocity of the body.
-        public float AngularVelocity;
+        public Single AngularVelocity;
 
         /// Is this body initially awake or sleeping?
         public bool Awake;
@@ -66,13 +70,13 @@ namespace Box2DSharp.Dynamics
         public bool FixedRotation;
 
         /// Scale the gravity applied to this body.
-        public float GravityScale;
+        public Single GravityScale;
 
         /// Linear damping is use to reduce the linear velocity. The damping parameter
         /// can be larger than 1.0f but the damping effect becomes sensitive to the
         /// time step when the damping parameter is large.
         /// Units are 1/time
-        public float LinearDamping;
+        public Single LinearDamping;
 
         /// The linear velocity of the body's origin in world co-ordinates.
         public Vector2 LinearVelocity;
@@ -126,24 +130,24 @@ namespace Box2DSharp.Dynamics
         /// Get/Set the angular damping of the body.
         /// 角阻尼
         /// </summary>
-        private float _angularDamping;
+        private Single _angularDamping;
 
         /// <summary>
         /// 质心的转动惯量
         /// </summary>
-        private float _inertia;
+        private Single _inertia;
 
         /// <summary>
         /// 线性阻尼
         /// </summary>
-        private float _linearDamping;
+        private Single _linearDamping;
 
         /// <summary>
         /// Get the total mass of the body.
         /// @return the mass, usually in kilograms (kg).
         /// 质量
         /// </summary>
-        private float _mass;
+        private Single _mass;
 
         /// <summary>
         /// 物体类型
@@ -168,17 +172,17 @@ namespace Box2DSharp.Dynamics
         /// <summary>
         /// 重力系数
         /// </summary>
-        internal float GravityScale;
+        internal Single GravityScale;
 
         /// <summary>
         /// 质心的转动惯量倒数
         /// </summary>
-        internal float InverseInertia;
+        internal Single InverseInertia;
 
         /// <summary>
         /// 质量倒数
         /// </summary>
-        internal float InvMass;
+        internal Single InvMass;
 
         /// <summary>
         /// 岛屿索引
@@ -198,7 +202,7 @@ namespace Box2DSharp.Dynamics
         /// <summary>
         /// 扭矩
         /// </summary>
-        internal float Torque;
+        internal Single Torque;
 
         /// <summary>
         /// 物体位置
@@ -297,7 +301,7 @@ namespace Box2DSharp.Dynamics
             Dispose();
         }
 
-        public float AngularDamping
+        public Single AngularDamping
         {
             get => _angularDamping;
             set => _angularDamping = value;
@@ -308,14 +312,14 @@ namespace Box2DSharp.Dynamics
         /// the new angular velocity in radians/second.
         /// 角速度
         /// </summary>
-        public float AngularVelocity { get; internal set; }
+        public Single AngularVelocity { get; internal set; }
 
         /// Get the rotational inertia of the body about the local origin.
         /// @return the rotational inertia, usually in kg-m^2.
-        public float Inertia => _inertia + _mass * MathUtils.Dot(Sweep.LocalCenter, Sweep.LocalCenter);
+        public Single Inertia => _inertia + _mass * MathUtils.Dot(Sweep.LocalCenter, Sweep.LocalCenter);
 
         /// Get/Set the linear damping of the body.
-        public float LinearDamping
+        public Single LinearDamping
         {
             get => _linearDamping;
             set => _linearDamping = value;
@@ -330,12 +334,12 @@ namespace Box2DSharp.Dynamics
         /// @return the linear velocity of the center of mass.
         public Vector2 LinearVelocity { get; internal set; }
 
-        public float Mass => _mass;
+        public Single Mass => _mass;
 
         /// <summary>
         /// 休眠时间
         /// </summary>
-        internal float SleepTime { get; set; }
+        internal Single SleepTime { get; set; }
 
         /// Set the type of this body. This may alter the mass and velocity.
         public BodyType BodyType
@@ -574,7 +578,7 @@ namespace Box2DSharp.Dynamics
             Fixtures.Clear();
         }
 
-        public void SetAngularVelocity(float value)
+        public void SetAngularVelocity(Single value)
         {
             if (_type == BodyType.StaticBody) // 静态物体无角速度
             {
@@ -657,7 +661,7 @@ namespace Box2DSharp.Dynamics
         /// @param density the shape density (set to zero for static bodies).
         /// @warning This function is locked during callbacks.
         /// 创建夹具
-        public Fixture CreateFixture(Shape shape, float density)
+        public Fixture CreateFixture(Shape shape, Single density)
         {
             var def = new FixtureDef {Shape = shape, Density = density};
 
@@ -727,7 +731,7 @@ namespace Box2DSharp.Dynamics
         /// Note: contacts are updated on the next call to b2World::Step.
         /// @param position the world position of the body's local origin.
         /// @param angle the world rotation in radians.
-        public void SetTransform(in Vector2 position, float angle)
+        public void SetTransform(in Vector2 position, Single angle)
         {
             Debug.Assert(_world.IsLocked == false);
             if (_world.IsLocked)
@@ -767,7 +771,7 @@ namespace Box2DSharp.Dynamics
 
         /// Get the angle in radians.
         /// @return the current world rotation angle in radians.
-        public float GetAngle()
+        public Single GetAngle()
         {
             return Sweep.A;
         }
@@ -852,7 +856,7 @@ namespace Box2DSharp.Dynamics
         /// </summary>
         /// <param name="torque"></param>
         /// <param name="wake"></param>
-        public void ApplyTorque(float torque, bool wake)
+        public void ApplyTorque(Single torque, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -938,7 +942,7 @@ namespace Box2DSharp.Dynamics
         /// </summary>
         /// <param name="impulse"></param>
         /// <param name="wake"></param>
-        public void ApplyAngularImpulse(float impulse, bool wake)
+        public void ApplyAngularImpulse(Single impulse, bool wake)
         {
             if (_type != BodyType.DynamicBody)
             {
@@ -1228,7 +1232,7 @@ namespace Box2DSharp.Dynamics
         /// 在安全时间段内快进,此时不同步粗检测
         /// </summary>
         /// <param name="alpha"></param>
-        internal void Advance(float alpha)
+        internal void Advance(Single alpha)
         {
             // Advance to the new safe time. This doesn't sync the broad-phase.
             Sweep.Advance(alpha);

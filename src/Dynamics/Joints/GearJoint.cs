@@ -1,6 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -21,7 +26,7 @@ namespace Box2DSharp.Dynamics.Joints
 
         private readonly Body _bodyD;
 
-        private readonly float _constant;
+        private readonly Single _constant;
 
         private readonly Joint _joint1;
 
@@ -40,32 +45,32 @@ namespace Box2DSharp.Dynamics.Joints
 
         private readonly Vector2 _localAxisD;
 
-        private readonly float _referenceAngleA;
+        private readonly Single _referenceAngleA;
 
-        private readonly float _referenceAngleB;
+        private readonly Single _referenceAngleB;
 
         private readonly JointType _typeA;
 
         private readonly JointType _typeB;
 
-        private float _iA, _iB, _iC, _iD;
+        private Single _iA, _iB, _iC, _iD;
 
-        private float _impulse;
+        private Single _impulse;
 
         // Solver temp
         private int _indexA, _indexB, _indexC, _indexD;
 
         private Vector2 _jvAc, _jvBd;
 
-        private float _jwA, _jwB, _jwC, _jwD;
+        private Single _jwA, _jwB, _jwC, _jwD;
 
         private Vector2 _lcA, _lcB, _lcC, _lcD;
 
-        private float _mA, _mB, _mC, _mD;
+        private Single _mA, _mB, _mC, _mD;
 
-        private float _mass;
+        private Single _mass;
 
-        private float _ratio;
+        private Single _ratio;
 
         public GearJoint(GearJointDef def) : base(def)
         {
@@ -78,7 +83,7 @@ namespace Box2DSharp.Dynamics.Joints
             Debug.Assert(_typeA == JointType.RevoluteJoint || _typeA == JointType.PrismaticJoint);
             Debug.Assert(_typeB == JointType.RevoluteJoint || _typeB == JointType.PrismaticJoint);
 
-            float coordinateA, coordinateB;
+            Single coordinateA, coordinateB;
 
             // TODO_ERIN there might be some problem with the joint edges in b2Joint.
 
@@ -170,13 +175,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Set/Get the gear ratio.
-        private void SetRatio(float ratio)
+        private void SetRatio(Single ratio)
         {
             Debug.Assert(ratio.IsValid());
             _ratio = ratio;
         }
 
-        private float GetRatio()
+        private Single GetRatio()
         {
             return _ratio;
         }
@@ -213,14 +218,14 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             var P = _impulse * _jvAc;
             return inv_dt * P;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             var L = _impulse * _jwA;
             return inv_dt * L;
@@ -387,12 +392,12 @@ namespace Box2DSharp.Dynamics.Joints
 
             var linearError = 0.0f;
 
-            float coordinateA, coordinateB;
+            Single coordinateA, coordinateB;
 
             var JvAC = new Vector2();
             var JvBD = new Vector2();
-            float JwA, JwB, JwC, JwD;
-            var mass = 0.0f;
+            Single JwA, JwB, JwC, JwD;
+            Single mass = 0.0f;
 
             if (_typeA == JointType.RevoluteJoint)
             {
@@ -444,7 +449,7 @@ namespace Box2DSharp.Dynamics.Joints
 
             var C = coordinateA + _ratio * coordinateB - _constant;
 
-            var impulse = 0.0f;
+            Single impulse = 0.0f;
             if (mass > 0.0f)
             {
                 impulse = -C / mass;

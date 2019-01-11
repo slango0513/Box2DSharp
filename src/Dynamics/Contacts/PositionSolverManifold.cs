@@ -1,8 +1,13 @@
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Contacts
 {
@@ -12,7 +17,7 @@ namespace Box2DSharp.Dynamics.Contacts
 
         public Vector2 Point;
 
-        public float Separation;
+        public Single Separation;
 
         public void Initialize(in ContactPositionConstraint pc, in Transform xfA, in Transform xfB, int index)
         {

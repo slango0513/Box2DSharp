@@ -5,7 +5,12 @@ using Box2DSharp.Inspection;
 using UnityEngine;
 using Color = System.Drawing.Color;
 using Transform = Box2DSharp.Common.Transform;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#else
 using Vector2 = System.Numerics.Vector2;
+#endif
 using Vector3 = UnityEngine.Vector3;
 
 namespace Box2DSharp
@@ -58,7 +63,7 @@ namespace Box2DSharp
         }
 
         /// <inheritdoc />
-        public void DrawCircle(in Vector2 center, float radius, in Color color)
+        public void DrawCircle(in Vector2 center, Single radius, in Color color)
         {
             var lines = new List<(Vector3, Vector3)>();
             const int lineCount = 200;
@@ -67,11 +72,11 @@ namespace Box2DSharp
                 lines.Add(
                     (
                         new UnityEngine.Vector2(
-                            center.X + radius * (float) Math.Cos(2 * Mathf.PI / lineCount * i),
-                            center.Y + radius * (float) Math.Sin(2 * Mathf.PI / lineCount * i)),
+                            (float)center.X + (float)radius * (float) Math.Cos(2 * Mathf.PI / lineCount * i),
+                            (float)center.Y + (float)radius * (float) Math.Sin(2 * Mathf.PI / lineCount * i)),
                         new UnityEngine.Vector2(
-                            center.X + radius * (float) Math.Cos(2 * Mathf.PI / lineCount * (i + 1)),
-                            center.Y + radius * (float) Math.Sin(2 * Mathf.PI / lineCount * (i + 1)))
+                            (float)center.X + (float)radius * (float) Math.Cos(2 * Mathf.PI / lineCount * (i + 1)),
+                            (float)center.Y + (float)radius * (float) Math.Sin(2 * Mathf.PI / lineCount * (i + 1)))
                     ));
             }
 
@@ -79,7 +84,7 @@ namespace Box2DSharp
         }
 
         /// <inheritdoc />
-        public void DrawSolidCircle(in Vector2 center, float radius, in Vector2 axis, in Color color)
+        public void DrawSolidCircle(in Vector2 center, Single radius, in Vector2 axis, in Color color)
         {
             var lines = new List<(Vector3, Vector3)>();
             const int lineCount = 200;
@@ -90,11 +95,11 @@ namespace Box2DSharp
                 lines.Add(
                     (
                         new UnityEngine.Vector2(
-                            center.X + radius * (float) Math.Cos(2 * Mathf.PI / lineCount * i),
-                            center.Y + radius * (float) Math.Sin(2 * Mathf.PI / lineCount * i)),
+                            (float)center.X + (float)radius * (float) Math.Cos(2 * Mathf.PI / lineCount * i),
+                            (float)center.Y + (float)radius * (float) Math.Sin(2 * Mathf.PI / lineCount * i)),
                         new UnityEngine.Vector2(
-                            center.X + radius * (float) Math.Cos(2 * Mathf.PI / lineCount * (i + 1)),
-                            center.Y + radius * (float) Math.Sin(2 * Mathf.PI / lineCount * (i + 1)))
+                            (float)center.X + (float)radius * (float) Math.Cos(2 * Mathf.PI / lineCount * (i + 1)),
+                            (float)center.Y + (float)radius * (float) Math.Sin(2 * Mathf.PI / lineCount * (i + 1)))
                     ));
             }
 
@@ -128,9 +133,9 @@ namespace Box2DSharp
         }
 
         /// <inheritdoc />
-        public void DrawPoint(in Vector2 p, float size, in Color color)
+        public void DrawPoint(in Vector2 p, Single size, in Color color)
         {
-            Drawer.PostPoint((p.ToUnityVector3(), size / 100, color.ToUnityColor()));
+            Drawer.PostPoint((p.ToUnityVector3(), (float)size / 100, color.ToUnityColor()));
         }
     }
 }

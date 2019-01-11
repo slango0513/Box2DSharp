@@ -2,6 +2,11 @@
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -60,7 +65,7 @@ namespace Box2DSharp.Collision
         ///     Get the perimeter length
         /// </summary>
         /// <returns></returns>
-        public float GetPerimeter()
+        public Single GetPerimeter()
         {
             var wx = UpperBound.X - LowerBound.X;
             var wy = UpperBound.Y - LowerBound.Y;

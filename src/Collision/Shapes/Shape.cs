@@ -1,6 +1,11 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Shapes
 {
@@ -12,7 +17,7 @@ namespace Box2DSharp.Collision.Shapes
     {
         /// Radius of a shape. For polygonal shapes this must be b2_polygonRadius. There is no support for
         /// making rounded polygons.
-        public float Radius;
+        public Single Radius;
 
         public ShapeType ShapeType;
 
@@ -55,6 +60,6 @@ namespace Box2DSharp.Collision.Shapes
         /// The inertia tensor is computed about the local origin.
         /// @param massData returns the mass data for this shape.
         /// @param density the density in kilograms per meter squared.
-        public abstract void ComputeMass(out MassData massData, float density);
+        public abstract void ComputeMass(out MassData massData, Single density);
     }
 }

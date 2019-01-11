@@ -6,6 +6,11 @@ using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
 using Box2DSharp.Dynamics;
 using Box2DSharp.Dynamics.Internal;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -370,15 +375,15 @@ namespace Box2DSharp.Collision
 
                 var child1 = node.Child1;
                 var child2 = node.Child2;
-                var balance = Math.Abs(_treeNodes[child2].Height - _treeNodes[child1].Height);
-                maxBalance = Math.Max(maxBalance, balance);
+                var balance = System.Math.Abs(_treeNodes[child2].Height - _treeNodes[child1].Height);
+                maxBalance = System.Math.Max(maxBalance, balance);
             }
 
             return maxBalance;
         }
 
         /// Get the ratio of the sum of the node areas to the root area.
-        public float GetAreaRatio()
+        public Single GetAreaRatio()
         {
             if (_root == NullNode)
             {
@@ -388,7 +393,7 @@ namespace Box2DSharp.Collision
             var root = _treeNodes[_root];
             var rootArea = root.AABB.GetPerimeter();
 
-            var totalArea = 0.0f;
+            Single totalArea = 0.0f;
             for (var i = 0; i < _nodeCapacity; ++i)
             {
                 var node = _treeNodes[i];
@@ -462,7 +467,7 @@ namespace Box2DSharp.Collision
                 var parent = _treeNodes[parentIndex];
                 parent.Child1 = index1;
                 parent.Child2 = index2;
-                parent.Height = 1 + Math.Max(child1.Height, child2.Height);
+                parent.Height = 1 + System.Math.Max(child1.Height, child2.Height);
                 parent.AABB.Combine(child1.AABB, child2.AABB);
                 parent.Parent = NullNode;
 
@@ -523,7 +528,7 @@ namespace Box2DSharp.Collision
                 var inheritanceCost = 2.0f * (combinedArea - area);
 
                 // Cost of descending into child1
-                float cost1;
+                Single cost1;
                 if (_treeNodes[child1].IsLeaf())
                 {
                     AABB.Combine(leafAABB, _treeNodes[child1].AABB, out var aabb);
@@ -538,7 +543,7 @@ namespace Box2DSharp.Collision
                 }
 
                 // Cost of descending into child2
-                float cost2;
+                Single cost2;
                 if (_treeNodes[child2].IsLeaf())
                 {
                     AABB.Combine(leafAABB, _treeNodes[child2].AABB, out var aabb);
@@ -620,7 +625,7 @@ namespace Box2DSharp.Collision
                 Debug.Assert(child1 != NullNode);
                 Debug.Assert(child2 != NullNode);
 
-                _treeNodes[index].Height = 1 + Math.Max(_treeNodes[child1].Height, _treeNodes[child2].Height);
+                _treeNodes[index].Height = 1 + System.Math.Max(_treeNodes[child1].Height, _treeNodes[child2].Height);
                 _treeNodes[index].AABB.Combine(_treeNodes[child1].AABB, _treeNodes[child2].AABB);
 
                 index = _treeNodes[index].Parent;
@@ -674,7 +679,7 @@ namespace Box2DSharp.Collision
                     var child2 = _treeNodes[index].Child2;
 
                     _treeNodes[index].AABB.Combine(_treeNodes[child1].AABB, _treeNodes[child2].AABB);
-                    _treeNodes[index].Height = 1 + Math.Max(_treeNodes[child1].Height, _treeNodes[child2].Height);
+                    _treeNodes[index].Height = 1 + System.Math.Max(_treeNodes[child1].Height, _treeNodes[child2].Height);
 
                     index = _treeNodes[index].Parent;
                 }
@@ -751,8 +756,8 @@ namespace Box2DSharp.Collision
                     A.AABB.Combine(B.AABB, G.AABB);
                     C.AABB.Combine(A.AABB, F.AABB);
 
-                    A.Height = 1 + Math.Max(B.Height, G.Height);
-                    C.Height = 1 + Math.Max(A.Height, F.Height);
+                    A.Height = 1 + System.Math.Max(B.Height, G.Height);
+                    C.Height = 1 + System.Math.Max(A.Height, F.Height);
                 }
                 else
                 {
@@ -762,8 +767,8 @@ namespace Box2DSharp.Collision
                     A.AABB.Combine(B.AABB, F.AABB);
                     C.AABB.Combine(A.AABB, G.AABB);
 
-                    A.Height = 1 + Math.Max(B.Height, F.Height);
-                    C.Height = 1 + Math.Max(A.Height, G.Height);
+                    A.Height = 1 + System.Math.Max(B.Height, F.Height);
+                    C.Height = 1 + System.Math.Max(A.Height, G.Height);
                 }
 
                 return iC;
@@ -811,8 +816,8 @@ namespace Box2DSharp.Collision
                     A.AABB.Combine(C.AABB, E.AABB);
                     B.AABB.Combine(A.AABB, D.AABB);
 
-                    A.Height = 1 + Math.Max(C.Height, E.Height);
-                    B.Height = 1 + Math.Max(A.Height, D.Height);
+                    A.Height = 1 + System.Math.Max(C.Height, E.Height);
+                    B.Height = 1 + System.Math.Max(A.Height, D.Height);
                 }
                 else
                 {
@@ -822,8 +827,8 @@ namespace Box2DSharp.Collision
                     A.AABB.Combine(C.AABB, D.AABB);
                     B.AABB.Combine(A.AABB, E.AABB);
 
-                    A.Height = 1 + Math.Max(C.Height, D.Height);
-                    B.Height = 1 + Math.Max(A.Height, E.Height);
+                    A.Height = 1 + System.Math.Max(C.Height, D.Height);
+                    B.Height = 1 + System.Math.Max(A.Height, E.Height);
                 }
 
                 return iB;
@@ -850,7 +855,7 @@ namespace Box2DSharp.Collision
 
             var height1 = ComputeHeight(node.Child1);
             var height2 = ComputeHeight(node.Child2);
-            return 1 + Math.Max(height1, height2);
+            return 1 + System.Math.Max(height1, height2);
         }
 
         private void ValidateStructure(int index)

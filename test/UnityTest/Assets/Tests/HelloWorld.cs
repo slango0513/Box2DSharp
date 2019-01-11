@@ -1,7 +1,11 @@
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using Box2DSharp.Dynamics;
+#if USE_FIXED_POINT
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#else
 using Vector2 = System.Numerics.Vector2;
+#endif
 
 namespace Box2DSharp.Tests
 {

@@ -1,6 +1,12 @@
 using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+using Vector3 = FixedMath.Numerics.Fix64Vector3;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -13,15 +19,15 @@ namespace Box2DSharp.Dynamics.Joints
 
         private readonly Vector2 _localAnchorB;
 
-        private readonly float _referenceAngle;
+        private readonly Single _referenceAngle;
 
-        private float _bias;
+        private Single _bias;
 
-        private float _dampingRatio;
+        private Single _dampingRatio;
 
-        private float _frequencyHz;
+        private Single _frequencyHz;
 
-        private float _gamma;
+        private Single _gamma;
 
         private Vector3 _impulse;
 
@@ -30,13 +36,13 @@ namespace Box2DSharp.Dynamics.Joints
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private Vector2 _localCenterA;
 
@@ -72,29 +78,29 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the reference angle.
-        private float GetReferenceAngle()
+        private Single GetReferenceAngle()
         {
             return _referenceAngle;
         }
 
         /// Set/get frequency in Hz.
-        private void SetFrequency(float hz)
+        private void SetFrequency(Single hz)
         {
             _frequencyHz = hz;
         }
 
-        private float GetFrequency()
+        private Single GetFrequency()
         {
             return _frequencyHz;
         }
 
         /// Set/get damping ratio.
-        private void SetDampingRatio(float ratio)
+        private void SetDampingRatio(Single ratio)
         {
             _dampingRatio = ratio;
         }
 
-        private float GetDampingRatio()
+        private Single GetDampingRatio()
         {
             return _dampingRatio;
         }
@@ -112,14 +118,14 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             var P = new Vector2(_impulse.X, _impulse.Y);
             return inv_dt * P;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return inv_dt * _impulse.Z;
         }
@@ -177,8 +183,8 @@ namespace Box2DSharp.Dynamics.Joints
             //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB,           r1x*iA+r2x*iB]
             //     [          -r1y*iA-r2y*iB,           r1x*iA+r2x*iB,                   iA+iB]
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var K = new Matrix3x3();
             K.Ex.X = mA + mB + _rA.Y * _rA.Y * iA + _rB.Y * _rB.Y * iB;
@@ -263,8 +269,8 @@ namespace Box2DSharp.Dynamics.Joints
             var vB = data.Velocities[_indexB].V;
             var wB = data.Velocities[_indexB].W;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             if (_frequencyHz > 0.0f)
             {
@@ -325,13 +331,13 @@ namespace Box2DSharp.Dynamics.Joints
             var qA = new Rotation(aA);
             var qB = new Rotation(aB);
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var rA = MathUtils.Mul(qA, _localAnchorA - _localCenterA);
             var rB = MathUtils.Mul(qB, _localAnchorB - _localCenterB);
 
-            float positionError, angularError;
+            Single positionError, angularError;
 
             var K = new Matrix3x3();
             K.Ex.X = mA + mB + rA.Y * rA.Y * iA + rB.Y * rB.Y * iB;

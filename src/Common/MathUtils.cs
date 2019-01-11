@@ -1,6 +1,12 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+using Vector3 = FixedMath.Numerics.Fix64Vector3;
+#endif
 
 namespace Box2DSharp.Common
 {
@@ -9,7 +15,7 @@ namespace Box2DSharp.Common
         /// Perform the dot product on two vectors.
         /// 点积,a·b=|a||b|·cosθ
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(in Vector2 a, in Vector2 b)
+        public static Single Dot(in Vector2 a, in Vector2 b)
         {
             return a.X * b.X + a.Y * b.Y;
         }
@@ -17,7 +23,7 @@ namespace Box2DSharp.Common
         /// Perform the cross product on two vectors. In 2D this produces a scalar.
         /// 叉积,axb=|a||b|·sinθ 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Cross(in Vector2 a, in Vector2 b)
+        public static Single Cross(in Vector2 a, in Vector2 b)
         {
             return a.X * b.Y - a.Y * b.X;
         }
@@ -25,7 +31,7 @@ namespace Box2DSharp.Common
         /// Perform the cross product on a vector and a scalar. In 2D this produces
         /// a vector.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Cross(in Vector2 a, float s)
+        public static Vector2 Cross(in Vector2 a, Single s)
         {
             return new Vector2(s * a.Y, -s * a.X);
         }
@@ -33,7 +39,7 @@ namespace Box2DSharp.Common
         /// Perform the cross product on a scalar and a vector. In 2D this produces
         /// a vector.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 Cross(float s, in Vector2 a)
+        public static Vector2 Cross(Single s, in Vector2 a)
         {
             return new Vector2(-s * a.Y, s * a.X);
         }
@@ -55,14 +61,14 @@ namespace Box2DSharp.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Distance(in Vector2 a, in Vector2 b)
+        public static Single Distance(in Vector2 a, in Vector2 b)
         {
             var c = a - b;
             return c.Length();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistanceSquared(in Vector2 a, in Vector2 b)
+        public static Single DistanceSquared(in Vector2 a, in Vector2 b)
         {
             var c = a - b;
             return Dot(c, c);
@@ -70,7 +76,7 @@ namespace Box2DSharp.Common
 
         /// Perform the dot product on two vectors.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(in Vector3 a, in Vector3 b)
+        public static Single Dot(in Vector3 a, in Vector3 b)
         {
             return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
@@ -193,7 +199,7 @@ namespace Box2DSharp.Common
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Clamp(float a, float low, float high)
+        public static Single Clamp(Single a, Single low, Single high)
         {
             return Math.Max(low, Math.Min(a, high));
         }

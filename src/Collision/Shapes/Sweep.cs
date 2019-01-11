@@ -2,6 +2,11 @@ using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Shapes
 {
@@ -18,7 +23,7 @@ namespace Box2DSharp.Collision.Shapes
         /// </summary>
         /// <param name="xf">位置</param>
         /// <param name="beta"></param>
-        public void GetTransform(out Transform xf, float beta)
+        public void GetTransform(out Transform xf, Single beta)
         {
             xf = new Transform();
 
@@ -32,7 +37,7 @@ namespace Box2DSharp.Collision.Shapes
 
         /// Advance the sweep forward, yielding a new initial state.
         /// @param alpha the new initial time.
-        public void Advance(float alpha)
+        public void Advance(Single alpha)
         {
             Debug.Assert(Alpha0 < 1.0f);
             var beta = (alpha - Alpha0) / (1.0f - Alpha0);
@@ -45,7 +50,7 @@ namespace Box2DSharp.Collision.Shapes
         public void Normalize()
         {
             var twoPi = 2.0f * Settings.Pi;
-            var d = twoPi * (float) Math.Floor(A0 / twoPi);
+            var d = twoPi * (Single) Math.Floor(A0 / twoPi);
             A0 -= d;
             A -= d;
         }
@@ -63,10 +68,10 @@ namespace Box2DSharp.Collision.Shapes
         /// <summary>
         /// world angles
         /// </summary>
-        public float A0, A;
+        public Single A0, A;
 
         /// Fraction of the current time step in the range [0,1]
         /// c0 and a0 are the positions at alpha0.
-        public float Alpha0;
+        public Single Alpha0;
     }
 }

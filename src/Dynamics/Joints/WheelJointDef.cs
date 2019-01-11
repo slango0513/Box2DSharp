@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -12,13 +17,13 @@ namespace Box2DSharp.Dynamics.Joints
     public class WheelJointDef : JointDef
     {
         /// Suspension damping ratio, one indicates critical damping
-        public float DampingRatio;
+        public Single DampingRatio;
 
         /// Enable/disable the joint motor.
         public bool EnableMotor;
 
         /// Suspension frequency, zero indicates no suspension
-        public float FrequencyHz;
+        public Single FrequencyHz;
 
         /// The local anchor point relative to bodyA's origin.
         public Vector2 LocalAnchorA;
@@ -30,10 +35,10 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 LocalAxisA;
 
         /// The maximum motor torque, usually in N-m.
-        public float MaxMotorTorque;
+        public Single MaxMotorTorque;
 
         /// The desired motor speed in radians per second.
-        public float MotorSpeed;
+        public Single MotorSpeed;
 
         public WheelJointDef()
         {

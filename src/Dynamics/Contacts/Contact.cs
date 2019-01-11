@@ -6,6 +6,10 @@ using Box2DSharp.Collision;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+#endif
 
 namespace Box2DSharp.Dynamics.Contacts
 {
@@ -20,7 +24,7 @@ namespace Box2DSharp.Dynamics.Contacts
 
         internal ContactFlag Flags;
 
-        internal float Friction;
+        internal Single Friction;
 
         internal int IndexA;
 
@@ -36,11 +40,11 @@ namespace Box2DSharp.Dynamics.Contacts
 
         internal ContactEdge NodeB;
 
-        internal float Restitution;
+        internal Single Restitution;
 
-        internal float TangentSpeed;
+        internal Single TangentSpeed;
 
-        internal float Toi;
+        internal Single Toi;
 
         internal int ToiCount;
 
@@ -156,12 +160,12 @@ namespace Box2DSharp.Dynamics.Contacts
             ToiCount = default;
         }
 
-        private static float MixFriction(float friction1, float friction2)
+        private static Single MixFriction(Single friction1, Single friction2)
         {
-            return (float) Math.Sqrt(friction1 * friction2);
+            return (Single) Math.Sqrt(friction1 * friction2);
         }
 
-        private static float MixRestitution(float restitution1, float restitution2)
+        private static Single MixRestitution(Single restitution1, Single restitution2)
         {
             return restitution1 > restitution2 ? restitution1 : restitution2;
         }
@@ -242,13 +246,13 @@ namespace Box2DSharp.Dynamics.Contacts
 
         /// Override the default friction mixture. You can call this in b2ContactListener::PreSolve.
         /// This value persists until set or reset.
-        public void SetFriction(float friction)
+        public void SetFriction(Single friction)
         {
             Friction = friction;
         }
 
         /// Get the friction.
-        public float GetFriction()
+        public Single GetFriction()
         {
             return Friction;
         }
@@ -261,13 +265,13 @@ namespace Box2DSharp.Dynamics.Contacts
 
         /// Override the default restitution mixture. You can call this in b2ContactListener::PreSolve.
         /// The value persists until you set or reset.
-        public void SetRestitution(float restitution)
+        public void SetRestitution(Single restitution)
         {
             Restitution = restitution;
         }
 
         /// Get the restitution.
-        public float GetRestitution()
+        public Single GetRestitution()
         {
             return Restitution;
         }
@@ -279,13 +283,13 @@ namespace Box2DSharp.Dynamics.Contacts
         }
 
         /// Set the desired tangent speed for a conveyor belt behavior. In meters per second.
-        public void SetTangentSpeed(float speed)
+        public void SetTangentSpeed(Single speed)
         {
             TangentSpeed = speed;
         }
 
         /// Get the desired tangent speed. In meters per second.
-        public float GetTangentSpeed()
+        public Single GetTangentSpeed()
         {
             return TangentSpeed;
         }

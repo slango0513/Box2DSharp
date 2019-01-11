@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Collider
 {
@@ -13,9 +18,9 @@ namespace Box2DSharp.Collision.Collider
         public void Initialize(
             in Manifold manifold,
             in Transform xfA,
-            float radiusA,
+            Single radiusA,
             in Transform xfB,
-            float radiusB)
+            Single radiusB)
         {
             if (manifold.PointCount == 0)
             {
@@ -90,6 +95,6 @@ namespace Box2DSharp.Collision.Collider
         /// <summary>
         /// a negative value indicates overlap, in meters, size Settings.MaxManifoldPoints
         /// </summary>
-        public FixedArray2<float> Separations;
+        public FixedArray2<Single> Separations;
     }
 }

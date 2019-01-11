@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -13,10 +18,10 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 LocalAnchorB;
 
         /// The maximum friction force in N.
-        public float MaxForce;
+        public Single MaxForce;
 
         /// The maximum friction torque in N-m.
-        public float MaxTorque;
+        public Single MaxTorque;
 
         public FrictionJointDef()
         {

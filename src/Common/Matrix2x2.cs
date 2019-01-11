@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Common
 {
@@ -18,7 +23,7 @@ namespace Box2DSharp.Common
         }
 
         /// Construct this matrix using scalars.
-        public Matrix2x2(float a11, float a12, float a21, float a22)
+        public Matrix2x2(Single a11, Single a12, Single a21, Single a22)
         {
             Ex.X = a11;
             Ex.Y = a21;

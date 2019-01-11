@@ -2,6 +2,11 @@ using System;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Shapes
 {
@@ -63,7 +68,7 @@ namespace Box2DSharp.Collision.Shapes
             }
 
             // Find the point of intersection of the line with the circle.
-            var a = -(c + (float) Math.Sqrt(sigma));
+            var a = -(c + (Single) Math.Sqrt(sigma));
 
             // Is the intersection point on the segment?
             if (0.0f <= a && a <= input.MaxFraction * rr)
@@ -91,7 +96,7 @@ namespace Box2DSharp.Collision.Shapes
         }
 
         /// @see b2Shape::ComputeMass
-        public override void ComputeMass(out MassData massData, float density)
+        public override void ComputeMass(out MassData massData, Single density)
         {
             massData = new MassData();
             massData.Mass = density * Settings.Pi * Radius * Radius;

@@ -1,7 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Numerics;
 using Box2DSharp.Collision;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Tests
 {
@@ -17,9 +22,9 @@ namespace Box2DSharp.Tests
 
         private int _countB;
 
-        private float _radiusA;
+        private Single _radiusA;
 
-        private float _radiusB;
+        private Single _radiusB;
 
         private void Start()
         {

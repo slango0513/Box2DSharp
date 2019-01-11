@@ -10,6 +10,11 @@ using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
 using Box2DSharp.Dynamics.Contacts;
 using Box2DSharp.Dynamics.Joints;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics
 {
@@ -20,7 +25,7 @@ namespace Box2DSharp.Dynamics
         /// support a variable time step.
         /// 时间步倍率
         /// </summary>
-        private float _invDt0;
+        private Single _invDt0;
 
         /// <summary>
         /// 时间步完成
@@ -144,7 +149,7 @@ namespace Box2DSharp.Dynamics
 
         /// Get the quality metric of the dynamic tree. The smaller the better.
         /// The minimum is 1.
-        public float TreeQuality => ContactManager.BroadPhase.GetTreeQuality();
+        public Single TreeQuality => ContactManager.BroadPhase.GetTreeQuality();
 
         public World() : this(new Vector2(0, -10))
         { }
@@ -396,7 +401,7 @@ namespace Box2DSharp.Dynamics
         /// <param name="timeStep">the amount of time to simulate, this should not vary.</param>
         /// <param name="velocityIterations">for the velocity constraint solver.</param>
         /// <param name="positionIterations">for the position constraint solver.</param>
-        public void Step(float timeStep, int velocityIterations, int positionIterations)
+        public void Step(Single timeStep, int velocityIterations, int positionIterations)
         {
             // profile 计时
             var stepTimer = Stopwatch.StartNew();
@@ -820,7 +825,7 @@ namespace Box2DSharp.Dynamics
             {
                 // Find the first TOI.
                 Contact minContact = null;
-                var minAlpha = 1.0f;
+                Single minAlpha = 1.0f;
 
                 foreach (var c in ContactManager.ContactList)
                 {
@@ -836,7 +841,7 @@ namespace Box2DSharp.Dynamics
                         continue;
                     }
 
-                    var alpha = 1.0f;
+                    Single alpha = 1.0f;
                     if (c.Flags.HasFlag(Contact.ContactFlag.ToiFlag))
                     {
                         // This contact has a valid cached TOI.

@@ -1,4 +1,8 @@
 using Box2DSharp.Common;
+using System;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+#endif
 
 namespace Box2DSharp.Dynamics.Contacts
 {
@@ -7,9 +11,9 @@ namespace Box2DSharp.Dynamics.Contacts
     /// match up one-to-one with the contact points in b2Manifold.
     public struct ContactImpulse
     {
-        public float[] NormalImpulses;
+        public Single[] NormalImpulses;
 
-        public float[] TangentImpulses;
+        public Single[] TangentImpulses;
 
         public int Count;
 
@@ -18,8 +22,8 @@ namespace Box2DSharp.Dynamics.Contacts
             return new ContactImpulse
             {
                 Count = 0,
-                NormalImpulses = new float[Settings.MaxManifoldPoints],
-                TangentImpulses = new float[Settings.MaxManifoldPoints]
+                NormalImpulses = new Single[Settings.MaxManifoldPoints],
+                TangentImpulses = new Single[Settings.MaxManifoldPoints]
             };
         }
     }

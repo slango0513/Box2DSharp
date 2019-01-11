@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -159,10 +163,10 @@ namespace Box2DSharp.Dynamics.Joints
         public abstract Vector2 GetAnchorB();
 
         /// Get the reaction force on bodyB at the joint anchor in Newtons.
-        public abstract Vector2 GetReactionForce(float inv_dt);
+        public abstract Vector2 GetReactionForce(Single inv_dt);
 
         /// Get the reaction torque on bodyB in N*m.
-        public abstract float GetReactionTorque(float inv_dt);
+        public abstract Single GetReactionTorque(Single inv_dt);
 
         /// Dump this joint to the log file.
         public virtual void Dump()

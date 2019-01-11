@@ -1,6 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -15,15 +20,15 @@ namespace Box2DSharp.Dynamics.Joints
     {
         private readonly Vector2 _localAnchorB;
 
-        private float _beta;
+        private Single _beta;
 
         private Vector2 _C;
 
-        private float _dampingRatio;
+        private Single _dampingRatio;
 
-        private float _frequencyHz;
+        private Single _frequencyHz;
 
-        private float _gamma;
+        private Single _gamma;
 
         // Solver shared
         private Vector2 _impulse;
@@ -31,15 +36,15 @@ namespace Box2DSharp.Dynamics.Joints
         // Solver temp
         private int _indexB;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private Vector2 _localCenterB;
 
         private Matrix2x2 _mass;
 
-        private float _maxForce;
+        private Single _maxForce;
 
         private Vector2 _rB;
 
@@ -82,34 +87,34 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Set/get the maximum force in Newtons.
-        public void SetMaxForce(float force)
+        public void SetMaxForce(Single force)
         {
             _maxForce = force;
         }
 
-        public float GetMaxForce()
+        public Single GetMaxForce()
         {
             return _maxForce;
         }
 
         /// Set/get the frequency in Hertz.
-        public void SetFrequency(float hz)
+        public void SetFrequency(Single hz)
         {
             _frequencyHz = hz;
         }
 
-        public float GetFrequency()
+        public Single GetFrequency()
         {
             return _frequencyHz;
         }
 
         /// Set/get the damping ratio (dimensionless).
-        public void SetDampingRatio(float ratio)
+        public void SetDampingRatio(Single ratio)
         {
             _dampingRatio = ratio;
         }
 
-        public float GetDampingRatio()
+        public Single GetDampingRatio()
         {
             return _dampingRatio;
         }
@@ -133,13 +138,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             return inv_dt * _impulse;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return inv_dt * 0.0f;
         }

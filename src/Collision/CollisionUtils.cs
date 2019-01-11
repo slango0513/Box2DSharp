@@ -1,7 +1,12 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -61,7 +66,7 @@ namespace Box2DSharp.Collision
             ref ClipVertex[] vOut,
             in ClipVertex[] vIn,
             in Vector2 normal,
-            float offset,
+            Single offset,
             int vertexIndexA)
         {
             // Start with no output points

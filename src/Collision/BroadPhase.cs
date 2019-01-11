@@ -3,6 +3,11 @@ using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Dynamics;
 using Box2DSharp.Dynamics.Internal;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -173,7 +178,7 @@ namespace Box2DSharp.Collision
         }
 
         /// Get the quality metric of the embedded tree.
-        public float GetTreeQuality()
+        public Single GetTreeQuality()
         {
             return _tree.GetAreaRatio();
         }
@@ -232,8 +237,8 @@ namespace Box2DSharp.Collision
                 Array.Copy(oldBuffer, _pairBuffer, _pairCount);
             }
 
-            _pairBuffer[_pairCount].ProxyIdA = Math.Min(proxyId, _queryProxyId);
-            _pairBuffer[_pairCount].ProxyIdB = Math.Max(proxyId, _queryProxyId);
+            _pairBuffer[_pairCount].ProxyIdA = System.Math.Min(proxyId, _queryProxyId);
+            _pairBuffer[_pairCount].ProxyIdB = System.Math.Max(proxyId, _queryProxyId);
             ++_pairCount;
 
             return true;

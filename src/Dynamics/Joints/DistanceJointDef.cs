@@ -1,5 +1,10 @@
+using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -12,14 +17,14 @@ namespace Box2DSharp.Dynamics.Joints
     public class DistanceJointDef : JointDef
     {
         /// The damping ratio. 0 = no damping, 1 = critical damping.
-        public float DampingRatio;
+        public Single DampingRatio;
 
         /// The mass-spring-damper frequency in Hertz. A value of 0
         /// disables softness.
-        public float FrequencyHz;
+        public Single FrequencyHz;
 
         /// The natural length between the anchor points.
-        public float Length;
+        public Single Length;
 
         /// The local anchor point relative to bodyA's origin.
         public Vector2 LocalAnchorA;

@@ -4,6 +4,11 @@ using System.Numerics;
 using Box2DSharp.Common;
 using Box2DSharp.Dynamics.Contacts;
 using Box2DSharp.Dynamics.Joints;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics
 {
@@ -225,10 +230,10 @@ namespace Box2DSharp.Dynamics
                 var minSleepTime = Settings.MaxFloat;
 
                 // 线速度最小值平方
-                const float linTolSqr = Settings.LinearSleepTolerance * Settings.LinearSleepTolerance;
+                Single linTolSqr = Settings.LinearSleepTolerance * Settings.LinearSleepTolerance;
 
                 // 角速度最小值平方
-                const float angTolSqr = Settings.AngularSleepTolerance * Settings.AngularSleepTolerance;
+                Single angTolSqr = Settings.AngularSleepTolerance * Settings.AngularSleepTolerance;
 
                 for (var i = 0; i < BodyCount; ++i)
                 {

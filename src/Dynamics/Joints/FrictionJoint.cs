@@ -1,6 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -8,22 +13,22 @@ namespace Box2DSharp.Dynamics.Joints
     /// It provides 2D translational friction and angular friction.
     public class FrictionJoint : Joint
     {
-        private float _angularImpulse;
+        private Single _angularImpulse;
 
-        private float _angularMass;
+        private Single _angularMass;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         // Solver shared
         private Vector2 _linearImpulse;
@@ -38,9 +43,9 @@ namespace Box2DSharp.Dynamics.Joints
 
         private Vector2 _localCenterB;
 
-        private float _maxForce;
+        private Single _maxForce;
 
-        private float _maxTorque;
+        private Single _maxTorque;
 
         private Vector2 _rA;
 
@@ -60,7 +65,7 @@ namespace Box2DSharp.Dynamics.Joints
 
         /// Get/Set the maximum friction force in N.
 
-        public float MaxForce
+        public Single MaxForce
         {
             get => _maxForce;
             set
@@ -70,7 +75,7 @@ namespace Box2DSharp.Dynamics.Joints
             }
         }
 
-        public float MaxTorque
+        public Single MaxTorque
         {
             get => _maxTorque;
             set
@@ -105,13 +110,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             return inv_dt * _linearImpulse;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return inv_dt * _angularImpulse;
         }
@@ -156,8 +161,8 @@ namespace Box2DSharp.Dynamics.Joints
             //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB,           r1x*iA+r2x*iB]
             //     [          -r1y*iA-r2y*iB,           r1x*iA+r2x*iB,                   iA+iB]
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var K = new Matrix2x2();
             K.Ex.X = mA + mB + iA * _rA.Y * _rA.Y + iB * _rB.Y * _rB.Y;
@@ -205,8 +210,8 @@ namespace Box2DSharp.Dynamics.Joints
             var vB = data.Velocities[_indexB].V;
             var wB = data.Velocities[_indexB].W;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var h = data.Step.Dt;
 

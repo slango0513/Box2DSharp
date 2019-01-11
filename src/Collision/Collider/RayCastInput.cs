@@ -1,4 +1,9 @@
+using System;
 using System.Numerics;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Collider
 {
@@ -9,6 +14,6 @@ namespace Box2DSharp.Collision.Collider
 
         public Vector2 P2;
 
-        public float MaxFraction;
+        public Single MaxFraction;
     }
 }

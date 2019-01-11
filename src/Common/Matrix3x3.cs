@@ -1,4 +1,10 @@
+using System;
 using System.Numerics;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+using Vector3 = FixedMath.Numerics.Fix64Vector3;
+#endif
 
 namespace Box2DSharp.Common
 {
@@ -69,7 +75,7 @@ namespace Box2DSharp.Common
         /// Returns the zero matrix if singular.
         public void GetInverse22(ref Matrix3x3 matrix3x3)
         {
-            float a = Ex.X, b = Ey.X, c = Ex.Y, d = Ey.Y;
+            Single a = Ex.X, b = Ey.X, c = Ex.Y, d = Ey.Y;
             var det = a * d - b * c;
             if (!det.Equals(0.0f))
             {
@@ -97,8 +103,8 @@ namespace Box2DSharp.Common
                 det = 1.0f / det;
             }
 
-            float a11 = Ex.X, a12 = Ey.X, a13 = Ez.X;
-            float a22 = Ey.Y, a23 = Ez.Y;
+            Single a11 = Ex.X, a12 = Ey.X, a13 = Ez.X;
+            Single a22 = Ey.Y, a23 = Ez.Y;
             var a33 = Ez.Z;
 
             matrix3x3.Ex.X = det * (a22 * a33 - a23 * a23);

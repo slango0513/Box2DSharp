@@ -1,6 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -15,10 +20,10 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 GroundAnchorB;
 
         /// The a reference length for the segment attached to bodyA.
-        public float LengthA;
+        public Single LengthA;
 
         /// The a reference length for the segment attached to bodyB.
-        public float LengthB;
+        public Single LengthB;
 
         /// The local anchor point relative to bodyA's origin.
         public Vector2 LocalAnchorA;
@@ -27,7 +32,7 @@ namespace Box2DSharp.Dynamics.Joints
         public Vector2 LocalAnchorB;
 
         /// The pulley ratio, used to simulate a block-and-tackle.
-        public float Ratio;
+        public Single Ratio;
 
         public PulleyJointDef()
         {
@@ -58,7 +63,7 @@ namespace Box2DSharp.Dynamics.Joints
             in Vector2 groundB,
             in Vector2 anchorA,
             in Vector2 anchorB,
-            float r)
+            Single r)
         {
             BodyA = bA;
             BodyB = bB;

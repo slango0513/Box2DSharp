@@ -2,6 +2,12 @@ using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+using Vector3 = FixedMath.Numerics.Fix64Vector3;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -83,9 +89,9 @@ namespace Box2DSharp.Dynamics.Joints
 
         internal readonly Vector2 LocalXAxisA;
 
-        internal readonly float ReferenceAngle;
+        internal readonly Single ReferenceAngle;
 
-        private float _a1, _a2;
+        private Single _a1, _a2;
 
         private Vector2 _axis, _perp;
 
@@ -100,13 +106,13 @@ namespace Box2DSharp.Dynamics.Joints
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private Matrix3x3 _k;
 
@@ -116,19 +122,19 @@ namespace Box2DSharp.Dynamics.Joints
 
         private Vector2 _localCenterB;
 
-        private float _lowerTranslation;
+        private Single _lowerTranslation;
 
-        private float _maxMotorForce;
+        private Single _maxMotorForce;
 
-        private float _motorImpulse;
+        private Single _motorImpulse;
 
-        private float _motorMass;
+        private Single _motorMass;
 
-        private float _motorSpeed;
+        private Single _motorSpeed;
 
-        private float _s1, _s2;
+        private Single _s1, _s2;
 
-        private float _upperTranslation;
+        private Single _upperTranslation;
 
         internal PrismaticJoint(PrismaticJointDef def) : base(def)
         {
@@ -174,13 +180,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the reference angle.
-        public float GetReferenceAngle()
+        public Single GetReferenceAngle()
         {
             return ReferenceAngle;
         }
 
         /// Get the current joint translation, usually in meters.
-        public float GetJointTranslation()
+        public Single GetJointTranslation()
         {
             var pA = BodyA.GetWorldPoint(LocalAnchorA);
             var pB = BodyB.GetWorldPoint(LocalAnchorB);
@@ -192,7 +198,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current joint translation speed, usually in meters per second.
-        public float GetJointSpeed()
+        public Single GetJointSpeed()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -233,19 +239,19 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the lower joint limit, usually in meters.
-        private float GetLowerLimit()
+        private Single GetLowerLimit()
         {
             return _lowerTranslation;
         }
 
         /// Get the upper joint limit, usually in meters.
-        private float GetUpperLimit()
+        private Single GetUpperLimit()
         {
             return _upperTranslation;
         }
 
         /// Set the joint limits, usually in meters.
-        private void SetLimits(float lower, float upper)
+        private void SetLimits(Single lower, Single upper)
         {
             Debug.Assert(lower <= upper);
             if (lower != _lowerTranslation || upper != _upperTranslation)
@@ -276,7 +282,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Set the motor speed, usually in meters per second.
-        private void SetMotorSpeed(float speed)
+        private void SetMotorSpeed(Single speed)
         {
             if (speed != _motorSpeed)
             {
@@ -287,13 +293,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the motor speed, usually in meters per second.
-        private float GetMotorSpeed()
+        private Single GetMotorSpeed()
         {
             return _motorSpeed;
         }
 
         /// Set the maximum motor force, usually in N.
-        private void SetMaxMotorForce(float force)
+        private void SetMaxMotorForce(Single force)
         {
             if (force != _maxMotorForce)
             {
@@ -303,13 +309,13 @@ namespace Box2DSharp.Dynamics.Joints
             }
         }
 
-        private float GetMaxMotorForce()
+        private Single GetMaxMotorForce()
         {
             return _maxMotorForce;
         }
 
         /// Get the current motor force given the inverse time step, usually in N.
-        private float GetMotorForce(float inv_dt)
+        private Single GetMotorForce(Single inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
@@ -327,13 +333,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             return inv_dt * (_impulse.X * _perp + (_motorImpulse + _impulse.Z) * _axis);
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return inv_dt * _impulse.Y;
         }
@@ -371,8 +377,8 @@ namespace Box2DSharp.Dynamics.Joints
             var rB = MathUtils.Mul(qB, LocalAnchorB - _localCenterB);
             var d = cB - cA + rB - rA;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             // Compute motor Jacobian and effective mass.
             {
@@ -488,8 +494,8 @@ namespace Box2DSharp.Dynamics.Joints
             var vB = data.Velocities[_indexB].V;
             var wB = data.Velocities[_indexB].W;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             // Solve linear motor constraint.
             if (_enableMotor && _limitState != LimitState.EqualLimits)
@@ -519,7 +525,7 @@ namespace Box2DSharp.Dynamics.Joints
             if (_enableLimit && _limitState != LimitState.InactiveLimit)
             {
                 // Solve prismatic and limit constraint in block form.
-                float Cdot2;
+                Single Cdot2;
                 Cdot2 = MathUtils.Dot(_axis, vB - vA) + _a2 * wB - _a1 * wA;
                 var Cdot = new Vector3(Cdot1.X, Cdot1.Y, Cdot2);
 
@@ -595,8 +601,8 @@ namespace Box2DSharp.Dynamics.Joints
             var qA = new Rotation(aA);
             var qB = new Rotation(aB);
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             // Compute fresh Jacobians
             var rA = MathUtils.Mul(qA, LocalAnchorA - _localCenterA);
@@ -620,7 +626,7 @@ namespace Box2DSharp.Dynamics.Joints
             var angularError = Math.Abs(C1.Y);
 
             var active = false;
-            var C2 = 0.0f;
+            Single C2 = 0.0f;
             if (_enableLimit)
             {
                 var translation = MathUtils.Dot(axis, d);

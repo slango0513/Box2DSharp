@@ -1,6 +1,11 @@
 using System;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -14,30 +19,30 @@ namespace Box2DSharp.Dynamics.Joints
 
         private readonly Vector2 _localAnchorB;
 
-        private float _bias;
+        private Single _bias;
 
-        private float _gamma;
+        private Single _gamma;
 
-        private float _impulse;
+        private Single _impulse;
 
         // Solver temp
         private int _indexA;
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private Vector2 _localCenterA;
 
         private Vector2 _localCenterB;
 
-        private float _mass;
+        private Single _mass;
 
         private Vector2 _rA;
 
@@ -59,14 +64,14 @@ namespace Box2DSharp.Dynamics.Joints
 
         /// Set/get the natural length.
         /// Manipulating the length can lead to non-physical behavior when the frequency is zero.
-        public float Length { get; set; }
+        public Single Length { get; set; }
 
         /// Set/get frequency in Hz.
-        public float FrequencyHz { get; set; }
+        public Single FrequencyHz { get; set; }
 
         /// Set/get damping ratio.
 
-        public float DampingRatio { get; set; }
+        public Single DampingRatio { get; set; }
 
         public override Vector2 GetAnchorA()
         {
@@ -80,7 +85,7 @@ namespace Box2DSharp.Dynamics.Joints
 
         /// Get the reaction force given the inverse time step.
         /// Unit is N.
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             var F = inv_dt * _impulse * _u;
             return F;
@@ -88,7 +93,7 @@ namespace Box2DSharp.Dynamics.Joints
 
         /// Get the reaction torque given the inverse time step.
         /// Unit is N*m. This is always zero for a distance joint.
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return 0.0f;
         }

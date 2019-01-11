@@ -2,6 +2,12 @@ using System;
 using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+using Vector3 = FixedMath.Numerics.Fix64Vector3;
+#endif
 
 namespace Box2DSharp.Dynamics.Joints
 {
@@ -13,7 +19,7 @@ namespace Box2DSharp.Dynamics.Joints
     /// is provided so that infinite forces are not generated.
     internal class RevoluteJoint : Joint
     {
-        internal readonly float ReferenceAngle;
+        internal readonly Single ReferenceAngle;
 
         private bool _enableLimit;
 
@@ -26,13 +32,13 @@ namespace Box2DSharp.Dynamics.Joints
 
         private int _indexB;
 
-        private float _invIa;
+        private Single _invIa;
 
-        private float _invIb;
+        private Single _invIb;
 
-        private float _invMassA;
+        private Single _invMassA;
 
-        private float _invMassB;
+        private Single _invMassB;
 
         private LimitState _limitState;
 
@@ -40,23 +46,23 @@ namespace Box2DSharp.Dynamics.Joints
 
         private Vector2 _localCenterB;
 
-        private float _lowerAngle;
+        private Single _lowerAngle;
 
         private Matrix3x3 _mass; // effective mass for point-to-point constraint.
 
-        private float _maxMotorTorque;
+        private Single _maxMotorTorque;
 
-        private float _motorImpulse;
+        private Single _motorImpulse;
 
-        private float _motorMass; // effective mass for motor/limit angular constraint.
+        private Single _motorMass; // effective mass for motor/limit angular constraint.
 
-        private float _motorSpeed;
+        private Single _motorSpeed;
 
         private Vector2 _rA;
 
         private Vector2 _rB;
 
-        private float _upperAngle;
+        private Single _upperAngle;
 
         // Solver shared
         internal Vector2 LocalAnchorA;
@@ -94,13 +100,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the reference angle.
-        public float GetReferenceAngle()
+        public Single GetReferenceAngle()
         {
             return ReferenceAngle;
         }
 
         /// Get the current joint angle in radians.
-        public float GetJointAngle()
+        public Single GetJointAngle()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -108,7 +114,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the current joint angle speed in radians per second.
-        public float GetJointSpeed()
+        public Single GetJointSpeed()
         {
             var bA = BodyA;
             var bB = BodyB;
@@ -134,19 +140,19 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the lower joint limit in radians.
-        public float GetLowerLimit()
+        public Single GetLowerLimit()
         {
             return _lowerAngle;
         }
 
         /// Get the upper joint limit in radians.
-        public float GetUpperLimit()
+        public Single GetUpperLimit()
         {
             return _upperAngle;
         }
 
         /// Set the joint limits in radians.
-        public void SetLimits(float lower, float upper)
+        public void SetLimits(Single lower, Single upper)
         {
             Debug.Assert(lower <= upper);
 
@@ -178,7 +184,7 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Set the motor speed in radians per second.
-        public void SetMotorSpeed(float speed)
+        public void SetMotorSpeed(Single speed)
         {
             if (speed != _motorSpeed)
             {
@@ -189,13 +195,13 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// Get the motor speed in radians per second.
-        public float GetMotorSpeed()
+        public Single GetMotorSpeed()
         {
             return _motorSpeed;
         }
 
         /// Set the maximum motor torque, usually in N-m.
-        public void SetMaxMotorTorque(float torque)
+        public void SetMaxMotorTorque(Single torque)
         {
             if (torque != _maxMotorTorque)
             {
@@ -205,7 +211,7 @@ namespace Box2DSharp.Dynamics.Joints
             }
         }
 
-        public float GetMaxMotorTorque()
+        public Single GetMaxMotorTorque()
         {
             return _maxMotorTorque;
         }
@@ -214,7 +220,7 @@ namespace Box2DSharp.Dynamics.Joints
         /// Unit is N.
         /// Get the current motor torque given the inverse time step.
         /// Unit is N*m.
-        public float GetMotorTorque(float inv_dt)
+        public Single GetMotorTorque(Single inv_dt)
         {
             return inv_dt * _motorImpulse;
         }
@@ -232,14 +238,14 @@ namespace Box2DSharp.Dynamics.Joints
         }
 
         /// <inheritdoc />
-        public override Vector2 GetReactionForce(float inv_dt)
+        public override Vector2 GetReactionForce(Single inv_dt)
         {
             var P = new Vector2(_impulse.X, _impulse.Y);
             return inv_dt * P;
         }
 
         /// <inheritdoc />
-        public override float GetReactionTorque(float inv_dt)
+        public override Single GetReactionTorque(Single inv_dt)
         {
             return inv_dt * _impulse.Z;
         }
@@ -301,8 +307,8 @@ namespace Box2DSharp.Dynamics.Joints
             //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB,           r1x*iA+r2x*iB]
             //     [          -r1y*iA-r2y*iB,           r1x*iA+r2x*iB,                   iA+iB]
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var fixedRotation = (iA + iB).Equals(0.0f);
 
@@ -397,8 +403,8 @@ namespace Box2DSharp.Dynamics.Joints
             var vB = data.Velocities[_indexB].V;
             var wB = data.Velocities[_indexB].W;
 
-            float mA = _invMassA, mB = _invMassB;
-            float iA = _invIa, iB = _invIb;
+            Single mA = _invMassA, mB = _invMassB;
+            Single iA = _invIa, iB = _invIb;
 
             var fixedRotation = (iA + iB).Equals(0.0f);
 
@@ -509,8 +515,8 @@ namespace Box2DSharp.Dynamics.Joints
             Rotation
                 qA = new Rotation(aA), qB = new Rotation(aB);
 
-            var angularError = 0.0f;
-            var positionError = 0.0f;
+            Single angularError = 0.0f;
+            Single positionError = 0.0f;
 
             var fixedRotation = (_invIa + _invIb).Equals(0.0f);
 
@@ -518,7 +524,7 @@ namespace Box2DSharp.Dynamics.Joints
             if (_enableLimit && _limitState != LimitState.InactiveLimit && fixedRotation == false)
             {
                 var angle = aB - aA - ReferenceAngle;
-                var limitImpulse = 0.0f;
+                Single limitImpulse = 0.0f;
 
                 if (_limitState == LimitState.EqualLimits)
                 {
@@ -569,8 +575,8 @@ namespace Box2DSharp.Dynamics.Joints
                 var C = cB + rB - cA - rA;
                 positionError = C.Length();
 
-                float mA = _invMassA, mB = _invMassB;
-                float iA = _invIa, iB = _invIb;
+                Single mA = _invMassA, mB = _invMassB;
+                Single iA = _invIa, iB = _invIb;
 
                 var K = new Matrix2x2();
                 K.Ex.X = mA + mB + iA * rA.Y * rA.Y + iB * rB.Y * rB.Y;

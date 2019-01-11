@@ -3,6 +3,11 @@ using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -17,7 +22,7 @@ namespace Box2DSharp.Collision
 
         public Sweep SweepB;
 
-        public float Tmax; // defines sweep interval [0, tMax]
+        public Single Tmax; // defines sweep interval [0, tMax]
     }
 
     /// Output parameters for b2TimeOfImpact.
@@ -38,14 +43,14 @@ namespace Box2DSharp.Collision
 
         public ToiState State;
 
-        public float Time;
+        public Single Time;
     }
 
     public static class TimeOfImpact
     {
-        public static float ToiTime;
+        public static Single ToiTime;
 
-        public static float ToiMaxTime;
+        public static Single ToiMaxTime;
 
         public static int ToiCalls;
 
@@ -91,7 +96,7 @@ namespace Box2DSharp.Collision
             var tolerance = 0.25f * Settings.LinearSlop;
             Debug.Assert(target > tolerance);
 
-            var t1 = 0.0f;
+            Single t1 = 0.0f;
             const int maxIterations = 20; // TODO_ERIN b2Settings
             var iter = 0;
 
@@ -148,17 +153,17 @@ namespace Box2DSharp.Collision
                 //                 // Dump the curve seen by the root finder
                 //                 {
                 //                     const int N  = 100;
-                //                     float     dx = 1.0f / N;
-                //                     float xs[N + 1];
-                //                     float fs[N + 1];
+                //                     Single     dx = 1.0f / N;
+                //                     Single xs[N + 1];
+                //                     Single fs[N + 1];
                 //
-                //                     float x = 0.0f;
+                //                     Single x = 0.0f;
                 //
                 //                     for (int i = 0; i <= N; ++i)
                 //                     {
                 //                         sweepA.GetTransform(&xfA, x);
                 //                         sweepB.GetTransform(&xfB, x);
-                //                         float f = fcn.Evaluate(xfA, xfB) - target;
+                //                         Single f = fcn.Evaluate(xfA, xfB) - target;
                 //
                 //                         printf("%g %g\n", x, f);
                 //
@@ -224,11 +229,11 @@ namespace Box2DSharp.Collision
 
                     // Compute 1D root of: f(x) - target = 0
                     var rootIterCount = 0;
-                    float a1 = t1, a2 = t2;
+                    Single a1 = t1, a2 = t2;
                     for (;;)
                     {
                         // Use a mix of the secant rule and bisection.
-                        float t;
+                        Single t;
                         if ((rootIterCount & 1) != 0)
                         {
                             // Secant rule to improve convergence.
@@ -270,7 +275,7 @@ namespace Box2DSharp.Collision
                         }
                     }
 
-                    ToiMaxRootIters = Math.Max(ToiMaxRootIters, rootIterCount);
+                    ToiMaxRootIters = System.Math.Max(ToiMaxRootIters, rootIterCount);
 
                     ++pushBackIter;
 
@@ -297,9 +302,9 @@ namespace Box2DSharp.Collision
                 }
             }
 
-            ToiMaxIters = Math.Max(ToiMaxIters, iter);
+            ToiMaxIters = System.Math.Max(ToiMaxIters, iter);
             timer.Stop();
-            float time = timer.ElapsedMilliseconds;
+            Single time = timer.ElapsedMilliseconds;
             ToiMaxTime = Math.Max(ToiMaxTime, time);
             ToiTime += time;
         }
@@ -333,13 +338,13 @@ namespace Box2DSharp.Collision
 
         // TODO_ERIN might not need to return the separation
 
-        public float Initialize(
+        public Single Initialize(
             ref SimplexCache cache,
             DistanceProxy proxyA,
             in Sweep sweepA,
             DistanceProxy proxyB,
             in Sweep sweepB,
-            float t1)
+            Single t1)
         {
             ProxyA = proxyA;
             ProxyB = proxyB;
@@ -419,7 +424,7 @@ namespace Box2DSharp.Collision
         }
 
         //
-        public float FindMinSeparation(out int indexA, out int indexB, float t)
+        public Single FindMinSeparation(out int indexA, out int indexB, Single t)
         {
             SweepA.GetTransform(out var xfA, t);
             SweepB.GetTransform(out var xfB, t);
@@ -487,7 +492,7 @@ namespace Box2DSharp.Collision
         }
 
         //
-        public float Evaluate(int indexA, int indexB, float t)
+        public Single Evaluate(int indexA, int indexB, Single t)
         {
             SweepA.GetTransform(out var xfA, t);
             SweepB.GetTransform(out var xfB, t);

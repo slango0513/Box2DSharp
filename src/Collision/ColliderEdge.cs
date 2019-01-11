@@ -4,6 +4,11 @@ using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -184,7 +189,7 @@ namespace Box2DSharp.Collision
 
             public int Index;
 
-            public float Separation;
+            public Single Separation;
         }
 
         // This holds polygon B expressed in frame A.
@@ -215,9 +220,9 @@ namespace Box2DSharp.Collision
 
             public Vector2 SideNormal2;
 
-            public float SideOffset1;
+            public Single SideOffset1;
 
-            public float SideOffset2;
+            public Single SideOffset2;
 
             public Vector2 V1, V2;
         }
@@ -246,7 +251,7 @@ namespace Box2DSharp.Collision
 
             public TempPolygon PolygonB;
 
-            public float Radius;
+            public Single Radius;
 
             public Transform Transform;
 
@@ -286,7 +291,7 @@ namespace Box2DSharp.Collision
                 edge1.Normalize();
                 Normal1.Set(edge1.Y, -edge1.X);
                 var offset1 = MathUtils.Dot(Normal1, CentroidB - V1);
-                float offset0 = 0.0f, offset2 = 0.0f;
+                Single offset0 = 0.0f, offset2 = 0.0f;
                 bool convex1 = false, convex2 = false;
 
                 // Is there a preceding edge?
@@ -496,8 +501,8 @@ namespace Box2DSharp.Collision
                 }
 
                 // Use hysteresis for jitter reduction.
-                const float k_relativeTol = 0.98f;
-                const float k_absoluteTol = 0.001f;
+                Single k_relativeTol = 0.98f;
+                Single k_absoluteTol = 0.001f;
 
                 EPAxis primaryAxis;
                 if (polygonAxis.Type == EPAxis.EPAxisType.Unknown)
@@ -670,7 +675,7 @@ namespace Box2DSharp.Collision
                 EPAxis axis;
                 axis.Type = EPAxis.EPAxisType.EdgeA;
                 axis.Index = Front ? 0 : 1;
-                axis.Separation = float.MaxValue;
+                axis.Separation = Single.MaxValue;
 
                 for (var i = 0; i < PolygonB.Count; ++i)
                 {
@@ -689,7 +694,7 @@ namespace Box2DSharp.Collision
                 EPAxis axis;
                 axis.Type = EPAxis.EPAxisType.Unknown;
                 axis.Index = -1;
-                axis.Separation = -float.MaxValue;
+                axis.Separation = -Single.MaxValue;
 
                 var perp = new Vector2(-Normal.Y, Normal.X);
 

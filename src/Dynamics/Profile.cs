@@ -1,22 +1,27 @@
+using System;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+#endif
+
 namespace Box2DSharp.Dynamics
 {
     /// Profiling data. Times are in milliseconds.
     public class Profile
     {
-        public float Step;
+        public Single Step;
 
-        public float Collide;
+        public Single Collide;
 
-        public float Solve;
+        public Single Solve;
 
-        public float SolveInit;
+        public Single SolveInit;
 
-        public float SolveVelocity;
+        public Single SolveVelocity;
 
-        public float SolvePosition;
+        public Single SolvePosition;
 
-        public float Broadphase;
+        public Single Broadphase;
 
-        public float SolveTOI;
+        public Single SolveTOI;
     }
 }

@@ -3,6 +3,11 @@ using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Dynamics.Contacts
 {
@@ -215,7 +220,7 @@ namespace Box2DSharp.Dynamics.Contacts
                     var k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
 
                     // Ensure a reasonable condition number.
-                    const float maxConditionNumber = 1000.0f;
+                    Single maxConditionNumber = 1000.0f;
                     if (k11 * k11 < maxConditionNumber * (k11 * k22 - k12 * k12))
                     {
                         // K is safe to invert.
@@ -445,7 +450,7 @@ namespace Box2DSharp.Dynamics.Contacts
 #if B2_DEBUG_SOLVER
 
 // Postconditions
-                            const float k_errorTol = 1e-3f;
+                            const Single k_errorTol = 1e-3f;
                             dv1 = vB + MathUtils.Cross(wB, cp1.rB) - vA - MathUtils.Cross(wA, cp1.rA);
                             dv2 = vB + MathUtils.Cross(wB, cp2.rB) - vA - MathUtils.Cross(wA, cp2.rA);
 
@@ -601,7 +606,7 @@ namespace Box2DSharp.Dynamics.Contacts
 
         public bool SolvePositionConstraints()
         {
-            var minSeparation = 0.0f;
+            Single minSeparation = 0.0f;
 
             for (var i = 0; i < _count; ++i)
             {
@@ -683,7 +688,7 @@ namespace Box2DSharp.Dynamics.Contacts
 
         public bool SolveTOIPositionConstraints(int toiIndexA, int toiIndexB)
         {
-            var minSeparation = 0.0f;
+            Single minSeparation = 0.0f;
 
             for (var i = 0; i < _count; ++i)
             {
@@ -695,16 +700,16 @@ namespace Box2DSharp.Dynamics.Contacts
                 var localCenterB = pc.LocalCenterB;
                 var pointCount = pc.PointCount;
 
-                var mA = 0.0f;
-                var iA = 0.0f;
+                Single mA = 0.0f;
+                Single iA = 0.0f;
                 if (indexA == toiIndexA || indexA == toiIndexB)
                 {
                     mA = pc.InvMassA;
                     iA = pc.InvIa;
                 }
 
-                var mB = 0.0f;
-                var iB = 0.0f;
+                Single mB = 0.0f;
+                Single iB = 0.0f;
                 if (indexB == toiIndexA || indexB == toiIndexB)
                 {
                     mB = pc.InvMassB;

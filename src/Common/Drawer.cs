@@ -1,5 +1,10 @@
+using System;
 using System.Drawing;
 using System.Numerics;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Common
 {
@@ -14,10 +19,10 @@ namespace Box2DSharp.Common
         void DrawSolidPolygon(Vector2[] vertices, int vertexCount, in Color color);
 
         /// Draw a circle.
-        void DrawCircle(in Vector2 center, float radius, in Color color);
+        void DrawCircle(in Vector2 center, Single radius, in Color color);
 
         /// Draw a solid circle.
-        void DrawSolidCircle(in Vector2 center, float radius, in Vector2 axis, in Color color);
+        void DrawSolidCircle(in Vector2 center, Single radius, in Vector2 axis, in Color color);
 
         /// Draw a line segment.
         void DrawSegment(in Vector2 p1, in Vector2 p2, in Color color);
@@ -27,6 +32,6 @@ namespace Box2DSharp.Common
         void DrawTransform(in Transform xf);
 
         /// Draw a point.
-        void DrawPoint(in Vector2 p, float size, in Color color);
+        void DrawPoint(in Vector2 p, Single size, in Color color);
     }
 }

@@ -3,6 +3,10 @@ using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision.Collider;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision.Shapes
 {
@@ -215,7 +219,7 @@ namespace Box2DSharp.Collision.Shapes
 
         /// Chains have zero mass.
         /// @see b2Shape::ComputeMass
-        public override void ComputeMass(out MassData massData, float density)
+        public override void ComputeMass(out MassData massData, Single density)
         {
             massData = new MassData();
             massData.Mass = 0.0f;

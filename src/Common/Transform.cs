@@ -1,5 +1,9 @@
 using System;
 using System.Numerics;
+#if USE_FIXED_POINT
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Common
 {
@@ -16,7 +20,7 @@ namespace Box2DSharp.Common
             Rotation = rotation;
         }
 
-        public Transform(in Vector2 position, float angle)
+        public Transform(in Vector2 position, Single angle)
         {
             Position = position;
             Rotation = new Rotation(angle);
@@ -30,7 +34,7 @@ namespace Box2DSharp.Common
         }
 
         /// Set this based on the position and angle.
-        public void Set(in Vector2 position, float angle)
+        public void Set(in Vector2 position, Single angle)
         {
             Position = position;
             Rotation.Set(angle);

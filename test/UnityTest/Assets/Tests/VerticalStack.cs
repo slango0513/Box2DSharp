@@ -3,7 +3,11 @@ using Box2DSharp.Dynamics;
 using UnityEditor;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
+#if USE_FIXED_POINT
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#else
 using Vector2 = System.Numerics.Vector2;
+#endif
 
 namespace Box2DSharp.Tests
 {

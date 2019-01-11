@@ -3,6 +3,11 @@ using System.Diagnostics;
 using System.Numerics;
 using Box2DSharp.Collision.Shapes;
 using Box2DSharp.Common;
+#if USE_FIXED_POINT
+using Math = FixedMath.MathFix;
+using Single = FixedMath.Fix64;
+using Vector2 = FixedMath.Numerics.Fix64Vector2;
+#endif
 
 namespace Box2DSharp.Collision
 {
@@ -71,7 +76,7 @@ namespace Box2DSharp.Collision
 
         /// Initialize the proxy using a vertex cloud and radius. The vertices
         /// must remain in scope while the proxy is in use.
-        public void Set(Vector2[] vertices, int count, float radius)
+        public void Set(Vector2[] vertices, int count, Single radius)
         {
             Vertices = new Vector2[vertices.Length];
             Array.Copy(vertices, Vertices, vertices.Length);
@@ -137,7 +142,7 @@ namespace Box2DSharp.Collision
 
         public int Count;
 
-        public float Radius;
+        public Single Radius;
     }
 
     public static class DistanceAlgorithm
@@ -267,7 +272,7 @@ namespace Box2DSharp.Collision
                 ++simplex.Count;
             }
 
-            b2_gjkMaxIters = Math.Max(b2_gjkMaxIters, iter);
+            b2_gjkMaxIters = System.Math.Max(b2_gjkMaxIters, iter);
 
             // Prepare output.
             simplex.GetWitnessPoints(out output.PointA, out output.PointB);
@@ -327,7 +332,7 @@ namespace Box2DSharp.Collision
 
             var r = input.TranslationB;
             var n = new Vector2(0.0f, 0.0f);
-            var lambda = 0.0f;
+            Single lambda = 0.0f;
 
             // Initial simplex
             var simplex = new Simplex {Count = 0};
@@ -344,7 +349,7 @@ namespace Box2DSharp.Collision
 
             // Sigma is the target distance between polygons
             var sigma = Math.Max(Settings.PolygonRadius, radius - Settings.PolygonRadius);
-            const float tolerance = 0.5f * Settings.LinearSlop;
+            Single tolerance = 0.5f * Settings.LinearSlop;
 
             // Main iteration loop.
             // 迭代次数上限
