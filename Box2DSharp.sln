@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Box2DSharp", "src\Box2DShar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testbed", "test\Testbed\Testbed.csproj", "{4D24A902-0250-4088-B03D-7446BAF74BE8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixedMath", "..\FixedMath\src\FixedMath\FixedMath.csproj", "{5681FB6E-FF7C-48B5-B94D-A451B4C080EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixedMath.Numerics", "..\FixedMath\src\FixedMath.Numerics\FixedMath.Numerics.csproj", "{0FFAB8E8-2D67-450E-A4DE-077601116A70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{4D24A902-0250-4088-B03D-7446BAF74BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D24A902-0250-4088-B03D-7446BAF74BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D24A902-0250-4088-B03D-7446BAF74BE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5681FB6E-FF7C-48B5-B94D-A451B4C080EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5681FB6E-FF7C-48B5-B94D-A451B4C080EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5681FB6E-FF7C-48B5-B94D-A451B4C080EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5681FB6E-FF7C-48B5-B94D-A451B4C080EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FFAB8E8-2D67-450E-A4DE-077601116A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FFAB8E8-2D67-450E-A4DE-077601116A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FFAB8E8-2D67-450E-A4DE-077601116A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FFAB8E8-2D67-450E-A4DE-077601116A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
